@@ -132,13 +132,13 @@ decode(#shoutcast{state = unsynced_body, sync_count = SyncCount, format = mp3} =
 decode(#shoutcast{state = unsynced_body, sync_count = SyncCount, format = aac} = State) when SyncCount == 50 ->
   decode(State#shoutcast{format = aac});
 
-decode(#shoutcast{state = unsynced_body, sync_count = SyncCount}) when SyncCount == 100 ->
+decode(#shoutcast{state = unsynced_body, sync_count = SyncCount}) when SyncCount == 10000 ->
   error;
 
 decode(#shoutcast{state = unsynced_body, sync_count = SyncCount, format = mp3, buffer = <<_, Rest/binary>>} = State) ->
   case mp3:decode(State#shoutcast.buffer) of
     {ok, _, _} ->
-      ?D({"Sync MP3"}),
+      ?D({"Synced MP3"}),
       decode(State#shoutcast{state = body, timestamp = 0});
     {more, undefined} ->
       ?D({"Want more MP3 for sync"}),
